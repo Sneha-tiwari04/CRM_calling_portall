@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import logo from "./assets/cyblogo.png";
+import logo from "./assets/cyblogo.png"; 
 
 function Login() {
   const navigate = useNavigate();
