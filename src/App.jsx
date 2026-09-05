@@ -1,7 +1,3 @@
-
-
-
-
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
@@ -9,6 +5,7 @@ import Login from "./Login";
 import AdminDashboard from "./pages/AdminDashboard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import Employees from "./pages/Employees";
 
 function App() {
   return (
@@ -24,6 +21,10 @@ function App() {
       <Route
         path="/login"
         element={<Login />}
+      />
+      <Route
+        path="/employees"
+        element={<Employees />}
       />
 
       {/* Protected Admin Dashboard */}
