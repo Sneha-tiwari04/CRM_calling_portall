@@ -5,7 +5,7 @@ const Employee = () => {
   const [employees, setEmployees] = useState([]);
 
   const [formData, setFormData] = useState({
-    email: "",
+    email: "", 
     employeeId: "",
     password: "",
     fullName: "",
