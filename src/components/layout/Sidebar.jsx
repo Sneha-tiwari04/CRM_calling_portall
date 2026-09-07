@@ -1,5 +1,7 @@
 import React from "react";
 import logo from "../../assets/cyblogo.png";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+
 
 function Sidebar({ isOpen, setIsOpen }) {
 
@@ -142,7 +144,8 @@ function Sidebar({ isOpen, setIsOpen }) {
 
 
           {/* Reports */}
-          <button
+          <Link
+            to="/reports"
             className="
               w-full flex items-center gap-3
               px-4 py-3 mb-1
@@ -156,7 +159,7 @@ function Sidebar({ isOpen, setIsOpen }) {
             <span className="text-sm">
               Reports
             </span>
-          </button>
+          </Link>
 
 
           {/* Calls */}
@@ -177,23 +180,21 @@ function Sidebar({ isOpen, setIsOpen }) {
           </button>
 
 
-          {/* Employees */}
-          <button
+           {/* Employees */}
+              <Link
+            to="/employees"
             className="
-              w-full flex items-center gap-3
-              px-4 py-3 mb-1
-              rounded-xl
-              text-gray-300
-              hover:bg-white/10 hover:text-white
-              transition-all duration-200
-            "
-          >
-            <span className="text-lg">♙</span>
-            <span className="text-sm">
-              Employees
-            </span>
-          </button>
-
+            w-full flex items-center gap-3
+            px-4 py-3 mb-1
+            rounded-xl
+            text-gray-300
+            hover:bg-white/10 hover:text-white
+            transition-all duration-200
+          "
+        >
+          <span className="text-lg">♙</span>
+          <span className="text-sm">Employees</span>
+        </Link>
 
           {/* Follow Ups */}
           <button
@@ -214,7 +215,10 @@ function Sidebar({ isOpen, setIsOpen }) {
 
 
           {/* Filter */}
-          <button
+          
+          
+          <Link
+            to="/filter"
             className="
               w-full flex items-center gap-3
               px-4 py-3 mb-1
@@ -228,7 +232,7 @@ function Sidebar({ isOpen, setIsOpen }) {
             <span className="text-sm">
               Filter
             </span>
-          </button>
+          </Link>
 
         </nav>
 
@@ -237,7 +241,8 @@ function Sidebar({ isOpen, setIsOpen }) {
         <div className="px-3 py-4 border-t border-white/10">
 
           {/* Settings */}
-          <button
+          <Link
+            to="/settings"
             className="
               w-full flex items-center gap-3
               px-4 py-3 mb-1
@@ -251,7 +256,8 @@ function Sidebar({ isOpen, setIsOpen }) {
             <span className="text-sm">
               Settings
             </span>
-          </button>
+            </Link>
+          
 
 
           {/* Logout */}

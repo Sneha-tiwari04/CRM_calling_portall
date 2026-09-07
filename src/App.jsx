@@ -6,6 +6,9 @@ import AdminDashboard from "./pages/AdminDashboard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Employees from "./pages/Employees";
+import Filter from "./pages/Filter";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -26,6 +29,19 @@ function App() {
         path="/employees"
         element={<Employees />}
       />
+      <Route
+        path="/filter"
+        element={<Filter />}
+      />
+      <Route
+        path="/reports"
+        element={<Reports />}
+      />
+      <Route
+        path="/settings"
+        element={<Settings />}
+      />
+
 
       {/* Protected Admin Dashboard */}
       <Route
