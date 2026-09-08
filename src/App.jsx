@@ -9,6 +9,7 @@ import Employees from "./pages/Employees";
 import Filter from "./pages/Filter";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
+import Calls from "./pages/Calls";
 
 function App() {
   return (
@@ -40,6 +41,10 @@ function App() {
       <Route
         path="/settings"
         element={<Settings />}
+      />
+      <Route
+        path="/calls"
+        element={<Calls />}
       />
 
 

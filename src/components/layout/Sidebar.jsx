@@ -163,7 +163,8 @@ function Sidebar({ isOpen, setIsOpen }) {
 
 
           {/* Calls */}
-          <button
+          <Link
+            to="/calls"
             className="
               w-full flex items-center gap-3
               px-4 py-3 mb-1
@@ -177,7 +178,7 @@ function Sidebar({ isOpen, setIsOpen }) {
             <span className="text-sm">
               Calls
             </span>
-          </button>
+          </Link>
 
 
            {/* Employees */}
