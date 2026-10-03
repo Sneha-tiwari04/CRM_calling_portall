@@ -9,7 +9,9 @@ import Employees from "./pages/Employees";
 import Filter from "./pages/Filter";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
-import Calls from "./pages/Calls";
+import Calls from "./pages/Calls";  
+import SalesDashboard from "./pages/SalesDashboard";
+
 
 function App() {
   return (
@@ -46,7 +48,10 @@ function App() {
         path="/calls"
         element={<Calls />}
       />
-
+       <Route
+        path="/sales-dashboard"
+        element={<SalesDashboard />}
+      />
 
       {/* Protected Admin Dashboard */}
       <Route
@@ -65,6 +70,7 @@ function App() {
       />
 
     </Routes>
+    
   );
 }
 

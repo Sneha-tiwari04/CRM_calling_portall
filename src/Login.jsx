@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import logo from "./assets/cyblogo.png"; 
+import logo from "./assets/cyblogo.png";
 
 function Login() {
   const navigate = useNavigate();
@@ -14,6 +14,10 @@ function Login() {
     password: "",
   });
 
+  // =====================================================
+  // HANDLE INPUT CHANGE
+  // =====================================================
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -21,43 +25,29 @@ function Login() {
     });
   };
 
+  // =====================================================
   // LOGIN
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  // =====================================================
 
-  if (!formData.email || !formData.password) {
-    alert("Please enter email and password");
-    return;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  setLoading(true);
+    if (!formData.email || !formData.password) {
+      alert("Please enter email and password");
+      return;
+    }
 
-  try {
-    const response = await fetch("http://127.0.0.1:8000/api/login/", {
-      method: "POST",
+    // =====================================================
+    // DEMO SALES EXECUTIVE LOGIN
+    // =====================================================
 
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      credentials: "include",
-
-      body: JSON.stringify({
-        email: formData.email,
-        password: formData.password,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      // Login successful
+    if (
+      formData.email === "sales@cybromleadhub.com" &&
+      formData.password === "Sales@123"
+    ) {
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userRole", data.role || "admin");
-      localStorage.setItem(
-        "userEmail",
-        data.email || formData.email
-      );
+      localStorage.setItem("userRole", "sales_executive");
+      localStorage.setItem("userEmail", formData.email);
 
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
@@ -65,35 +55,101 @@ function Login() {
         localStorage.removeItem("rememberMe");
       }
 
-      setLoading(false);
-
-      // Dashboard only after successful login
-      navigate("/admin");
-    } else {
-      setLoading(false);
-
-      alert(data.message || "Invalid email or password");
+      navigate("/sales-dashboard");
+      return;
     }
-  } catch (error) {
-    console.error("Login Error:", error);
 
-    setLoading(false);
+    // =====================================================
+    // OWNER / ADMIN LOGIN
+    // YOUR ORIGINAL BACKEND LOGIN
+    // =====================================================
 
-    alert(
-      "Unable to connect to server. Please make sure Django backend is running."
-    );
-  }
-};
+    setLoading(true);
 
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/login/",
+        {
+          method: "POST",
 
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-  // DEMO LOGIN
-const handleDemoLogin = () => {
-  setFormData({
-    email: "admin@cybromleadhub.com",
-    password: "Admin@123",
-  });
-};
+          credentials: "include",
+
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Login successful
+        localStorage.setItem("isLoggedIn", "true");
+
+        localStorage.setItem(
+          "userRole",
+          data.role || "admin"
+        );
+
+        localStorage.setItem(
+          "userEmail",
+          data.email || formData.email
+        );
+
+        if (rememberMe) {
+          localStorage.setItem("rememberMe", "true");
+        } else {
+          localStorage.removeItem("rememberMe");
+        }
+
+        setLoading(false);
+
+        // OWNER / ADMIN DASHBOARD
+        navigate("/admin");
+      } else {
+        setLoading(false);
+
+        alert(
+          data.message || "Invalid email or password"
+        );
+      }
+    } catch (error) {
+      console.error("Login Error:", error);
+
+      setLoading(false);
+
+      alert(
+        "Unable to connect to server. Please make sure Django backend is running."
+      );
+    }
+  };
+
+  // =====================================================
+  // DEMO ADMIN LOGIN
+  // =====================================================
+
+  const handleAdminDemoLogin = () => {
+    setFormData({
+      email: "admin@cybromleadhub.com",
+      password: "Admin@123",
+    });
+  };
+
+  // =====================================================
+  // DEMO SALES EXECUTIVE LOGIN
+  // =====================================================
+
+  const handleSalesDemoLogin = () => {
+    setFormData({
+      email: "sales@cybromleadhub.com",
+      password: "Sales@123",
+    });
+  };
 
   return (
     <div className="min-h-screen w-full bg-[#F5F8FC] overflow-y-auto">
@@ -127,7 +183,6 @@ const handleDemoLogin = () => {
 
           <div className="absolute top-1/3 right-10 w-32 xl:w-40 h-32 xl:h-40 bg-[#F58220]/10 rounded-full blur-3xl pointer-events-none" />
 
-
           {/* BRAND HEADER */}
 
           <div className="relative z-10 flex items-center gap-3">
@@ -156,7 +211,6 @@ const handleDemoLogin = () => {
 
           </div>
 
-
           {/* HERO CONTENT */}
 
           <div className="my-auto max-w-lg relative z-10 py-6">
@@ -177,7 +231,6 @@ const handleDemoLogin = () => {
               Welcome Back
             </span>
 
-
             <h1 className="text-3xl xl:text-4xl font-bold leading-tight tracking-tight mb-4">
 
               Manage Leads. <br />
@@ -192,7 +245,6 @@ const handleDemoLogin = () => {
 
             </h1>
 
-
             <p className="text-blue-50/80 text-sm leading-relaxed mb-6">
 
               A smart lead management platform to track enquiries,
@@ -200,12 +252,11 @@ const handleDemoLogin = () => {
 
             </p>
 
-
             {/* FEATURES */}
 
             <div className="space-y-3">
 
-              {/* Feature 1 */}
+              {/* FEATURE 1 */}
 
               <div
                 className="
@@ -245,8 +296,7 @@ const handleDemoLogin = () => {
 
               </div>
 
-
-              {/* Feature 2 */}
+              {/* FEATURE 2 */}
 
               <div
                 className="
@@ -286,8 +336,7 @@ const handleDemoLogin = () => {
 
               </div>
 
-
-              {/* Feature 3 */}
+              {/* FEATURE 3 */}
 
               <div
                 className="
@@ -331,7 +380,6 @@ const handleDemoLogin = () => {
 
           </div>
 
-
           {/* FOOTER */}
 
           <p className="text-xs text-blue-100/50 relative z-10">
@@ -339,7 +387,6 @@ const handleDemoLogin = () => {
           </p>
 
         </div>
-
 
         {/* =====================================================
             RIGHT / LOGIN FORM
@@ -356,7 +403,6 @@ const handleDemoLogin = () => {
         >
 
           <div className="w-full max-w-sm sm:max-w-md my-auto">
-
 
             {/* MOBILE LOGO */}
 
@@ -393,7 +439,6 @@ const handleDemoLogin = () => {
 
             </div>
 
-
             {/* HEADER */}
 
             <div className="text-center mb-6 sm:mb-8">
@@ -425,8 +470,9 @@ const handleDemoLogin = () => {
 
             </div>
 
-
-            {/* LOGIN FORM */}
+            {/* =====================================================
+                LOGIN FORM
+                ===================================================== */}
 
             <form
               onSubmit={handleSubmit}
@@ -477,7 +523,6 @@ const handleDemoLogin = () => {
 
               </div>
 
-
               {/* PASSWORD */}
 
               <div>
@@ -497,7 +542,9 @@ const handleDemoLogin = () => {
 
                   <button
                     type="button"
-                    onClick={() => navigate("/forgot-password")}
+                    onClick={() =>
+                      navigate("/forgot-password")
+                    }
                     className="
                       text-xs
                       font-medium
@@ -510,7 +557,6 @@ const handleDemoLogin = () => {
                   </button>
 
                 </div>
-
 
                 <div className="relative">
 
@@ -540,10 +586,11 @@ const handleDemoLogin = () => {
                     "
                   />
 
-
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() =>
+                      setShowPassword(!showPassword)
+                    }
                     className="
                       absolute
                       right-3.5
@@ -567,7 +614,6 @@ const handleDemoLogin = () => {
                 </div>
 
               </div>
-
 
               {/* REMEMBER ME */}
 
@@ -604,7 +650,6 @@ const handleDemoLogin = () => {
                 </label>
 
               </div>
-
 
               {/* LOGIN BUTTON */}
 
@@ -654,8 +699,9 @@ const handleDemoLogin = () => {
 
             </form>
 
-
-            {/* OR */}
+            {/* =====================================================
+                OR
+                ===================================================== */}
 
             <div className="flex items-center gap-3 my-5 sm:my-6">
 
@@ -677,12 +723,13 @@ const handleDemoLogin = () => {
 
             </div>
 
-
-            {/* DEMO ACCOUNT */}
+            {/* =====================================================
+                DEMO ADMIN ACCOUNT
+                ===================================================== */}
 
             <button
               type="button"
-              onClick={handleDemoLogin}
+              onClick={handleAdminDemoLogin}
               className="
                 w-full h-11 sm:h-12
                 rounded-lg
@@ -696,19 +743,18 @@ const handleDemoLogin = () => {
                 transition-all
               "
             >
-              Fill Demo Account
+              Fill Demo Admin Account
             </button>
 
-
-            {/* DEMO DETAILS */}
+            {/* ADMIN CREDENTIALS */}
 
             <div
               className="
                 mt-3
                 px-4 py-3
                 rounded-lg
-                bg-[#F58220]/5
-                border border-[#F58220]/20
+                bg-[#0077B5]/5
+                border border-[#0077B5]/20
                 text-center
               "
             >
@@ -727,6 +773,56 @@ const handleDemoLogin = () => {
 
             </div>
 
+            {/* =====================================================
+                DEMO SALES EXECUTIVE ACCOUNT
+                ===================================================== */}
+
+            <button
+              type="button"
+              onClick={handleSalesDemoLogin}
+              className="
+                w-full h-11 sm:h-12
+                mt-3
+                rounded-lg
+                border border-[#F58220]/30
+                bg-[#F58220]/5
+                hover:bg-[#F58220]/10
+                hover:border-[#F58220]
+                text-xs sm:text-sm
+                font-medium
+                text-[#172B49]
+                transition-all
+              "
+            >
+              Fill Demo Sales Executive Account
+            </button>
+
+            {/* SALES CREDENTIALS */}
+
+            <div
+              className="
+                mt-3
+                px-4 py-3
+                rounded-lg
+                bg-[#F58220]/5
+                border border-[#F58220]/20
+                text-center
+              "
+            >
+
+              <p className="text-[11px] text-slate-500">
+                Demo Sales Executive Credentials
+              </p>
+
+              <p className="text-xs font-semibold text-[#172B49] mt-1">
+                sales@cybromleadhub.com
+              </p>
+
+              <p className="text-xs font-semibold text-[#172B49]">
+                Password: Sales@123
+              </p>
+
+            </div>
 
             {/* REGISTER */}
 
@@ -749,7 +845,6 @@ const handleDemoLogin = () => {
               </button>
 
             </p>
-
 
             {/* SECURITY */}
 
