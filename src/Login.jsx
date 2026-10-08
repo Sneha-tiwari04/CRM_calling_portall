@@ -14,10 +14,6 @@ function Login() {
     password: "",
   });
 
-  // =====================================================
-  // HANDLE INPUT CHANGE
-  // =====================================================
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -25,29 +21,54 @@ function Login() {
     });
   };
 
-  // =====================================================
   // LOGIN
-  // =====================================================
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  if (!formData.email || !formData.password) {
+    alert("Please enter email and password");
+    return;
+  }
 
-    if (!formData.email || !formData.password) {
-      alert("Please enter email and password");
-      return;
+  setLoading(true);
+
+  try {
+    const response = await fetch("http://localhost:8000/api/login/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password,
+      }),
+    });
+
+    // Pehle response ko text me read karenge
+    const responseText = await response.text();
+
+    console.log("STATUS:", response.status);
+    console.log("BACKEND RESPONSE:", responseText);
+
+    let data = {};
+
+    try {
+      data = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      console.log("Backend JSON return nahi kar raha.");
     }
 
-    // =====================================================
-    // DEMO SALES EXECUTIVE LOGIN
-    // =====================================================
-
-    if (
-      formData.email === "sales@cybromleadhub.com" &&
-      formData.password === "Sales@123"
-    ) {
+    if (response.ok) {
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userRole", "sales_executive");
-      localStorage.setItem("userEmail", formData.email);
+      localStorage.setItem(
+        "userRole",
+        data.role || "admin"
+      );
+      localStorage.setItem(
+        "userEmail",
+        data.email || formData.email
+      );
 
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
@@ -55,101 +76,35 @@ function Login() {
         localStorage.removeItem("rememberMe");
       }
 
-      navigate("/sales-dashboard");
-      return;
-    }
-
-    // =====================================================
-    // OWNER / ADMIN LOGIN
-    // YOUR ORIGINAL BACKEND LOGIN
-    // =====================================================
-
-    setLoading(true);
-
-    try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/login/",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          credentials: "include",
-
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Login successful
-        localStorage.setItem("isLoggedIn", "true");
-
-        localStorage.setItem(
-          "userRole",
-          data.role || "admin"
-        );
-
-        localStorage.setItem(
-          "userEmail",
-          data.email || formData.email
-        );
-
-        if (rememberMe) {
-          localStorage.setItem("rememberMe", "true");
-        } else {
-          localStorage.removeItem("rememberMe");
-        }
-
-        setLoading(false);
-
-        // OWNER / ADMIN DASHBOARD
-        navigate("/admin");
-      } else {
-        setLoading(false);
-
-        alert(
-          data.message || "Invalid email or password"
-        );
-      }
-    } catch (error) {
-      console.error("Login Error:", error);
-
-      setLoading(false);
-
+      navigate("/admin");
+    } else {
       alert(
-        "Unable to connect to server. Please make sure Django backend is running."
+        data.message ||
+        data.detail ||
+        `Login failed. Status: ${response.status}`
       );
     }
-  };
 
-  // =====================================================
-  // DEMO ADMIN LOGIN
-  // =====================================================
+  } catch (error) {
+    console.error("LOGIN FETCH ERROR:", error);
 
-  const handleAdminDemoLogin = () => {
-    setFormData({
-      email: "admin@cybromleadhub.com",
-      password: "Admin@123",
-    });
-  };
+    alert(
+      "Login API request failed. Check browser console for exact error."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
-  // =====================================================
-  // DEMO SALES EXECUTIVE LOGIN
-  // =====================================================
 
-  const handleSalesDemoLogin = () => {
-    setFormData({
-      email: "sales@cybromleadhub.com",
-      password: "Sales@123",
-    });
-  };
+
+  // DEMO LOGIN
+const handleDemoLogin = () => {
+  setFormData({
+    email: "admin@cybromleadhub.com",
+    password: "Admin@123",
+  });
+};
 
   return (
     <div className="min-h-screen w-full bg-[#F5F8FC] overflow-y-auto">
@@ -183,6 +138,7 @@ function Login() {
 
           <div className="absolute top-1/3 right-10 w-32 xl:w-40 h-32 xl:h-40 bg-[#F58220]/10 rounded-full blur-3xl pointer-events-none" />
 
+
           {/* BRAND HEADER */}
 
           <div className="relative z-10 flex items-center gap-3">
@@ -211,6 +167,7 @@ function Login() {
 
           </div>
 
+
           {/* HERO CONTENT */}
 
           <div className="my-auto max-w-lg relative z-10 py-6">
@@ -231,6 +188,7 @@ function Login() {
               Welcome Back
             </span>
 
+
             <h1 className="text-3xl xl:text-4xl font-bold leading-tight tracking-tight mb-4">
 
               Manage Leads. <br />
@@ -245,6 +203,7 @@ function Login() {
 
             </h1>
 
+
             <p className="text-blue-50/80 text-sm leading-relaxed mb-6">
 
               A smart lead management platform to track enquiries,
@@ -252,11 +211,12 @@ function Login() {
 
             </p>
 
+
             {/* FEATURES */}
 
             <div className="space-y-3">
 
-              {/* FEATURE 1 */}
+              {/* Feature 1 */}
 
               <div
                 className="
@@ -296,7 +256,8 @@ function Login() {
 
               </div>
 
-              {/* FEATURE 2 */}
+
+              {/* Feature 2 */}
 
               <div
                 className="
@@ -336,7 +297,8 @@ function Login() {
 
               </div>
 
-              {/* FEATURE 3 */}
+
+              {/* Feature 3 */}
 
               <div
                 className="
@@ -380,6 +342,7 @@ function Login() {
 
           </div>
 
+
           {/* FOOTER */}
 
           <p className="text-xs text-blue-100/50 relative z-10">
@@ -387,6 +350,7 @@ function Login() {
           </p>
 
         </div>
+
 
         {/* =====================================================
             RIGHT / LOGIN FORM
@@ -403,6 +367,7 @@ function Login() {
         >
 
           <div className="w-full max-w-sm sm:max-w-md my-auto">
+
 
             {/* MOBILE LOGO */}
 
@@ -439,6 +404,7 @@ function Login() {
 
             </div>
 
+
             {/* HEADER */}
 
             <div className="text-center mb-6 sm:mb-8">
@@ -470,9 +436,8 @@ function Login() {
 
             </div>
 
-            {/* =====================================================
-                LOGIN FORM
-                ===================================================== */}
+
+            {/* LOGIN FORM */}
 
             <form
               onSubmit={handleSubmit}
@@ -523,6 +488,7 @@ function Login() {
 
               </div>
 
+
               {/* PASSWORD */}
 
               <div>
@@ -542,9 +508,7 @@ function Login() {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      navigate("/forgot-password")
-                    }
+                    onClick={() => navigate("/forgot-password")}
                     className="
                       text-xs
                       font-medium
@@ -557,6 +521,7 @@ function Login() {
                   </button>
 
                 </div>
+
 
                 <div className="relative">
 
@@ -586,11 +551,10 @@ function Login() {
                     "
                   />
 
+
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowPassword(!showPassword)
-                    }
+                    onClick={() => setShowPassword(!showPassword)}
                     className="
                       absolute
                       right-3.5
@@ -614,6 +578,7 @@ function Login() {
                 </div>
 
               </div>
+
 
               {/* REMEMBER ME */}
 
@@ -650,6 +615,7 @@ function Login() {
                 </label>
 
               </div>
+
 
               {/* LOGIN BUTTON */}
 
@@ -699,9 +665,8 @@ function Login() {
 
             </form>
 
-            {/* =====================================================
-                OR
-                ===================================================== */}
+
+            {/* OR */}
 
             <div className="flex items-center gap-3 my-5 sm:my-6">
 
@@ -723,13 +688,12 @@ function Login() {
 
             </div>
 
-            {/* =====================================================
-                DEMO ADMIN ACCOUNT
-                ===================================================== */}
+
+            {/* DEMO ACCOUNT */}
 
             <button
               type="button"
-              onClick={handleAdminDemoLogin}
+              onClick={handleDemoLogin}
               className="
                 w-full h-11 sm:h-12
                 rounded-lg
@@ -743,18 +707,19 @@ function Login() {
                 transition-all
               "
             >
-              Fill Demo Admin Account
+              Fill Demo Account
             </button>
 
-            {/* ADMIN CREDENTIALS */}
+
+            {/* DEMO DETAILS */}
 
             <div
               className="
                 mt-3
                 px-4 py-3
                 rounded-lg
-                bg-[#0077B5]/5
-                border border-[#0077B5]/20
+                bg-[#F58220]/5
+                border border-[#F58220]/20
                 text-center
               "
             >
@@ -773,56 +738,6 @@ function Login() {
 
             </div>
 
-            {/* =====================================================
-                DEMO SALES EXECUTIVE ACCOUNT
-                ===================================================== */}
-
-            <button
-              type="button"
-              onClick={handleSalesDemoLogin}
-              className="
-                w-full h-11 sm:h-12
-                mt-3
-                rounded-lg
-                border border-[#F58220]/30
-                bg-[#F58220]/5
-                hover:bg-[#F58220]/10
-                hover:border-[#F58220]
-                text-xs sm:text-sm
-                font-medium
-                text-[#172B49]
-                transition-all
-              "
-            >
-              Fill Demo Sales Executive Account
-            </button>
-
-            {/* SALES CREDENTIALS */}
-
-            <div
-              className="
-                mt-3
-                px-4 py-3
-                rounded-lg
-                bg-[#F58220]/5
-                border border-[#F58220]/20
-                text-center
-              "
-            >
-
-              <p className="text-[11px] text-slate-500">
-                Demo Sales Executive Credentials
-              </p>
-
-              <p className="text-xs font-semibold text-[#172B49] mt-1">
-                sales@cybromleadhub.com
-              </p>
-
-              <p className="text-xs font-semibold text-[#172B49]">
-                Password: Sales@123
-              </p>
-
-            </div>
 
             {/* REGISTER */}
 
@@ -845,6 +760,7 @@ function Login() {
               </button>
 
             </p>
+
 
             {/* SECURITY */}
 
